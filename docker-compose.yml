@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:13
+    container_name: postgres_image
+    restart: always
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    env_file:
+      - ./src/backend/.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - test-yadro
+
+  backend_app:
+    build:
+      context: .
+      dockerfile: ./src/Dockerfile
+    env_file:
+      - ./src/backend/.env
+    depends_on:
+      - postgres
+    networks:
+      - test-yadro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+
+networks:
+  test-yadro:

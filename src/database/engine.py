@@ -1,14 +1,13 @@
-import asyncio
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 
-from config import DatabaseSetting
-from src.database.models import Base
+from backend.config import DatabaseSetting
+from database.models import Base
 
 
 db = DatabaseSetting()
 
-db_url = f"postgresql://{db.db_username}:{db.db_password}@{db.db_host}:{db.db_port}/{db.db_name}"
+db_url = f"postgresql+asyncpg://{db.db_username}:{db.db_password}@{db.db_host}:{db.db_port}/{db.db_name}"
 
 async_engine = create_async_engine(db_url, pool_pre_ping=True, pool_recycle=300)
 

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from schemas.schemas_graph import GraphSchema, ResponseGraphSchema, ListGraphsSchema
+from backend.schemas.schemas_graph import GraphSchema, ResponseGraphSchema, ListGraphsSchema
 
 
 router = APIRouter(prefix="/api/graph")
