@@ -1,23 +1,24 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
 
-class adjancency_graphs(Base):
+class AdjancencyGraphs(Base):
     __tablename__ = 'adjacency_graphs'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    nodes = Column()
+    nodes = relationship("NodesGraphs", back_populates="graph", cascade="all, delete-orphan")
+    edges = relationship("EdgesGraphs", back_populates="graph", cascade="all, delete-orphan")
 
 
-class nodes_graphs(Base):
+class NodesGraphs(Base):
     id = Column(Integer, nullable=False, autoincrement=True)
     graph_id = Column(Integer, ForeignKey("adjacency_graphs.id"), nullable=False)
     name = Column(String, nullable=False)
 
 
-class edges_graphs(Base):
+class EdgesGraphs(Base):
     id = Column(Integer, nullable=False, autoincrement=True)
     graph_id = Column(Integer, ForeignKey("adjacency_graphs.id"), nullable=False)
     
