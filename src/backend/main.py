@@ -1,8 +1,11 @@
+import logging
+
 from fastapi import FastAPI
 
-from database.engine import create_tables, drop_tables
+from src.database.engine import create_tables, drop_tables
+from src.backend.routers.router_grafs import router as graph_router
 
-from backend.routers.router_grafs import router as graph_router
+logger = logging.getLogger(__name__)
 
 
 app = FastAPI(
@@ -13,6 +16,7 @@ app = FastAPI(
 async def create_models_database():
     await drop_tables()
     await create_tables()
+    logger.info("Database created")
 
 
 @app.get("/health")

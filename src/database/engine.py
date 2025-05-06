@@ -1,8 +1,9 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
+import asyncio
 
-from backend.config import DatabaseSetting
-from database.models import Base
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+
+from src.backend.config import DatabaseSetting
+from src.database.models import Base
 
 
 db = DatabaseSetting()
@@ -18,13 +19,11 @@ AsyncSessionLocal = async_sessionmaker(
 
 
 async def create_tables(engine = async_engine):
-    """Создание таблиц"""
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
 
 async def drop_tables(engine = async_engine):
-    """Удаление таблиц"""
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
 
@@ -38,3 +37,7 @@ async def get_db_session():
             raise e
         finally:
             await session.close()
+
+
+if __name__ == "__main__":
+    asyncio.run(create_tables())

@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends
-from backend.schemas.schemas_graph import GraphSchema, ResponseGraphSchema, ListGraphsSchema
-from database.utils import UtilsAdjacencyGraphs
-from database.engine import get_db_session
 from sqlalchemy.orm import Session
+
+from src.backend.schemas.schemas_graph import GraphSchema, ResponseGraphSchema, ListGraphsSchema
+from src.database.utils import UtilsAdjacencyGraphs
+from src.database.engine import get_db_session
 
 
 router = APIRouter(prefix="/api/graph")
@@ -19,6 +20,7 @@ async def create_graph(graph: GraphSchema, session: Session = Depends(get_db_ses
         adj_graf = UtilsAdjacencyGraphs(session)
         new_graph_id = await adj_graf.add_graph(nodes=graph.nodes, edges=graph.edges)
     except Exception as e:
+        print(e)
         raise HTTPException(
             status_code=400,
             detail="Failed add graph"
@@ -34,7 +36,7 @@ async def read_graph(graph_id: int, session: Session = Depends(get_db_session)) 
             status_code=422,
             detail="Validation Error"
         )
-    
+
     adj_graph = UtilsAdjacencyGraphs(session)
     res = await adj_graph.get_graph(graph_id)
 
@@ -44,7 +46,7 @@ async def read_graph(graph_id: int, session: Session = Depends(get_db_session)) 
             detail="Graph not found"
         )
 
-    return ResponseGraphSchema(**res)
+    return ResponseGraphSchema(graph_id=res.id, graph=GraphSchema(nodes=res.nodes, edges=res.edges))
 
 
 @router.get("/{graph_id}/adjacency_list")
@@ -54,7 +56,7 @@ async def get_adjacency_list(graph_id: int, session: Session = Depends(get_db_se
             status_code=422,
             detail="Validation Error"
         )
-    
+
     adj_graph = UtilsAdjacencyGraphs(session)
     res = await adj_graph.get_adjacency_graph(graph_id)
 
@@ -74,7 +76,7 @@ async def get_adjacency_list(graph_id: int, session: Session = Depends(get_db_se
             status_code=422,
             detail="Validation Error"
         )
-    
+
     adj_graph = UtilsAdjacencyGraphs(session)
     res = await adj_graph.get_reverse_adjacency_graph(graph_id)
 
@@ -94,6 +96,6 @@ async def delete_node(graph_id: int, node_name: str, session: Session = Depends(
             status_code=422,
             detail="Validation Error"
         )
-    
+
     adj_graph = UtilsAdjacencyGraphs(session)
     await adj_graph.delete_graph(graph_id, node_name)
