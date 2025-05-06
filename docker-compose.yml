@@ -21,6 +21,8 @@ services:
       dockerfile: ./src/Dockerfile
     env_file:
       - ./src/backend/.env
+    ports:
+      - "8000:8000"
     depends_on:
       - postgres
     networks:
