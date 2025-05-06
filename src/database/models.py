@@ -20,4 +20,6 @@ class EdgesGraphs(Base):
     __tablename__ = "edges_graphs"
     id = Column(Integer, primary_key=True, autoincrement=True)
     graph_id = Column(Integer, ForeignKey("adjacency_graphs.id"), nullable=False)
+    source = Column(String, nullable=False)
+    target = Column(String, nullable=False)
     graph = relationship("AdjacencyGraphs", back_populates="edges")
