@@ -48,7 +48,7 @@ async def read_graph(graph_id: int, session: Session = Depends(get_db_session)) 
 
 
 @router.get("/{graph_id}/adjacency_list")
-async def get_adjancency_list(graph_id: int, session: Session = Depends(get_db_session)) -> ListGraphsSchema:
+async def get_adjacency_list(graph_id: int, session: Session = Depends(get_db_session)) -> ListGraphsSchema:
     if graph_id < 0:
         raise HTTPException(
             status_code=422,
@@ -61,14 +61,14 @@ async def get_adjancency_list(graph_id: int, session: Session = Depends(get_db_s
     if not res:
         raise HTTPException(
             status_code=404,
-            detail="Adjancency graph not found"
+            detail="Adjacency graph not found"
         )
 
     return res
 
 
 @router.get("/{graph_id}/reverse_adjacency_list")
-async def get_adjancency_list(graph_id: int, session: Session = Depends(get_db_session)) -> ListGraphsSchema:
+async def get_adjacency_list(graph_id: int, session: Session = Depends(get_db_session)) -> ListGraphsSchema:
     if graph_id < 0:
         raise HTTPException(
             status_code=422,
@@ -81,15 +81,15 @@ async def get_adjancency_list(graph_id: int, session: Session = Depends(get_db_s
     if not res:
         raise HTTPException(
             status_code=404,
-            detail="Adjancency graph not found"
+            detail="Adjacency graph not found"
         )
 
     return res
 
 
-@router.delete("/{graph_id}/node/{node_name}")
+@router.delete("/{graph_id}/node/{node_name}", status_code=204)
 async def delete_node(graph_id: int, node_name: str, session: Session = Depends(get_db_session)):
-    if graph_id < 0:
+    if graph_id < 0 or not node_name:
         raise HTTPException(
             status_code=422,
             detail="Validation Error"
